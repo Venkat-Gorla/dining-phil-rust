@@ -15,7 +15,16 @@ impl ForkPool {
         Self { forks }
     }
 
-    pub fn get_fork_pair(&self, index: usize) -> (Arc<Mutex<i32>>, Arc<Mutex<i32>>) {
+    pub fn get_ordered_forks(&self, id: usize) -> (Arc<Mutex<i32>>, Arc<Mutex<i32>>) {
+        let (left, right) = self.get_fork_pair(id);
+        if id % 2 == 0 {
+            (left, right)
+        } else {
+            (right, left)
+        }
+    }
+
+    fn get_fork_pair(&self, index: usize) -> (Arc<Mutex<i32>>, Arc<Mutex<i32>>) {
         let left_fork = self.forks[index].clone();
         let right_fork = self.forks[(index + 1) % self.forks.len()].clone();
         (left_fork, right_fork)
@@ -28,13 +37,7 @@ pub fn philosopher_eat(id: usize, pool: &ForkPool, count: usize) {
         println!("Philosopher {} is thinking", id);
         thread::sleep(Duration::from_millis(50));
 
-        let (left, right) = pool.get_fork_pair(id);
-        let (first, second) = if id % 2 == 0 {
-            (left, right)
-        } else {
-            (right, left)
-        };
-
+        let (first, second) = pool.get_ordered_forks(id);
         let _lock1 = first.lock().unwrap();
         let _lock2 = second.lock().unwrap();
 
