@@ -13,3 +13,4 @@
 
 # By default, include Cargo.lock for binaries, ignore for libraries
 Cargo.lock
+src/vg.rs
