@@ -64,3 +64,47 @@ pub fn run_philosophers() {
         handle.join().unwrap();
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_fork_pair_consistency() {
+        let pool = ForkPool::new(NUM_PHILOSOPHERS);
+        for i in 0..NUM_PHILOSOPHERS {
+            let (left, right) = pool.get_ordered_forks(i);
+            assert!(!Arc::ptr_eq(&left, &right), "Left and right forks must not be the same");
+        }
+    }
+
+    #[test]
+    fn test_run_philosophers_completes() {
+        run_philosophers();
+    }
+
+    #[test]
+    fn test_single_philosopher_eats() {
+        let pool = ForkPool::new(2);
+        philosopher_eat(0, &pool, 1);
+    }
+
+    #[test]
+    fn test_no_deadlock() {
+        use std::sync::mpsc;
+        use std::time::Duration;
+
+        let (tx, rx) = mpsc::channel();
+
+        std::thread::spawn(move || {
+            run_philosophers(); // simulate dining
+            tx.send(()).unwrap(); // signal success
+        });
+
+        let timeout = Duration::from_secs(5);
+        assert!(
+            rx.recv_timeout(timeout).is_ok(),
+            "Deadlock detected: philosophers did not finish in time"
+        );
+    }
+}
