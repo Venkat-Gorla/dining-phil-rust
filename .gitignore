@@ -1,0 +1,15 @@
+# Compiled output
+/target/
+
+# Backup files
+*.rs.bk
+
+# IDE/editor junk
+**/*.swp
+**/*.swo
+.DS_Store
+.idea/
+.vscode/
+
+# By default, include Cargo.lock for binaries, ignore for libraries
+Cargo.lock
