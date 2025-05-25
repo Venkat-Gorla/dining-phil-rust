@@ -7,6 +7,7 @@ This project implements the classic **Dining Philosophers Problem** in safe, idi
 - Thread-safe `ForkPool` managing shared forks
 - Deadlock-free fork acquisition logic (even/odd ordering)
 - Configurable eating cycles per philosopher
+- Inter-thread communication with `mpsc` channel to verify philosopher activity
 - Modular and testable architecture
 - Deadlock detection test with timeout
 

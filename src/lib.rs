@@ -3,19 +3,19 @@ use std::thread;
 use std::time::Duration;
 
 pub struct ForkPool {
-    forks: Vec<Arc<Mutex<i32>>>,
+    forks: Vec<Arc<Mutex<()>>>,
 }
 
 impl ForkPool {
     pub fn new(num_forks: usize) -> Self {
         let forks = (0..num_forks)
-            .map(|_| Arc::new(Mutex::new(0)))
+            .map(|_| Arc::new(Mutex::new(())))
             .collect();
 
         Self { forks }
     }
 
-    pub fn get_ordered_forks(&self, id: usize) -> (Arc<Mutex<i32>>, Arc<Mutex<i32>>) {
+    pub fn get_ordered_forks(&self, id: usize) -> (Arc<Mutex<()>>, Arc<Mutex<()>>) {
         let (left, right) = self.get_fork_pair(id);
         if id % 2 == 0 {
             (left, right)
@@ -24,7 +24,7 @@ impl ForkPool {
         }
     }
 
-    fn get_fork_pair(&self, index: usize) -> (Arc<Mutex<i32>>, Arc<Mutex<i32>>) {
+    fn get_fork_pair(&self, index: usize) -> (Arc<Mutex<()>>, Arc<Mutex<()>>) {
         let left_fork = self.forks[index].clone();
         let right_fork = self.forks[(index + 1) % self.forks.len()].clone();
         (left_fork, right_fork)
