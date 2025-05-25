@@ -26,6 +26,7 @@ Each philosopher is modeled as a thread.
 ```text
 src/
 ├── lib.rs         # All logic and testable code
+├── main.rs        # Command line utility to test the core logic
 ```
 
 ## ✅ Example: Run Simulation
