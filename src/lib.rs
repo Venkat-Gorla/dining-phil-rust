@@ -87,10 +87,15 @@ mod tests {
 
     #[test]
     fn test_fork_pair_consistency() {
+        assert!(NUM_PHILOSOPHERS >= 2, "Dining requires at least two philosophers");
+
         let pool = ForkPool::new(NUM_PHILOSOPHERS);
         for i in 0..NUM_PHILOSOPHERS {
             let (left, right) = pool.get_ordered_forks(i);
-            assert!(!Arc::ptr_eq(&left, &right), "Left and right forks must not be the same");
+            assert!(
+                !Arc::ptr_eq(&left, &right),
+                "Left and right forks must not be the same for philosopher {i}"
+            );
         }
     }
 
